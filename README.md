@@ -6,7 +6,9 @@
 > **Pinjam Meminjam Tanpa Drama.**
 > *Personal Asset Lending Tracker with Proof-of-Condition.*
 
- *(screenshot aplikasi nanti)*
+<img width="1919" height="896" alt="image" src="https://github.com/user-attachments/assets/8900abf1-eddf-40fa-97ff-98117aa6152a" />
+
+
 
 ### Latar Belakang Masalah (The Problem)
 
@@ -51,8 +53,117 @@ Project ini dibangun menggunakan **MERN Stack** untuk performa dan skalabilitas:
 
 -----
 
-#### Cara Menjalankan Project (Setup Instructions)
+### Cara Menjalankan Project (Setup Instructions)
 
-*(isi cara install: npm install, setup .env, npm run dev, dll)*
+Ikuti langkah-langkah berikut untuk menjalankan **BalikinDong** di komputer lokal Anda.
+
+### 1. Prasyarat (Prerequisites)
+Pastikan Anda sudah menginstall:
+* [Node.js](https://nodejs.org/) (Versi 16 atau lebih baru)
+* [Git](https://git-scm.com/)
+* [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (Akun database cloud)
+
+### 2. Clone Repository
+```bash
+git clone [https://github.com/username-kamu/balikindong.git](https://github.com/username-kamu/balikindong.git)
+cd balikindong
+````
+
+### 3\. Setup Backend (Server)
+
+Buka terminal baru, masuk ke folder backend:
+
+```bash
+cd balikindong-backend
+```
+
+**a. Install Dependencies:**
+
+```bash
+npm install
+```
+
+**b. Konfigurasi Environment Variable (.env):**
+Buat file baru bernama `.env` di dalam folder `balikindong-backend`, lalu isi dengan konfigurasi berikut:
+
+```env
+PORT=5000
+MONGO_URI=masukkan_connection_string_mongodb_anda_disini
+JWT_SECRET=rahasia_kunci_jwt_bebas
+NODE_ENV=development
+```
+
+**c. Buat Folder Uploads:**
+Karena folder kosong tidak ter-upload ke git, Anda perlu membuatnya manual agar fitur upload foto berjalan:
+
+```bash
+mkdir uploads
+```
+
+**d. Jalankan Server:**
+
+```bash
+npm run dev
+```
+
+*(Server akan berjalan di http://localhost:5000)*
 
 -----
+
+### 4\. Setup Frontend (Client)
+
+Buka terminal **baru** (jangan matikan terminal backend), masuk ke folder client:
+
+```bash
+cd client
+```
+
+**a. Install Dependencies:**
+
+```bash
+npm install
+```
+
+**b. Jalankan React App:**
+
+```bash
+npm run dev
+```
+
+Buka browser dan akses alamat yang muncul (biasanya **http://localhost:5173**).
+
+-----
+
+### 🧪 Akun Demo (Optional)
+
+Jika Anda malas registrasi, gunakan akun demo berikut (jika database sudah di-seed):
+
+  * **Email:** admin@demo.com
+  * **Password:** 123456
+
+-----
+
+## 📸 Screen Capture
+
+### Login Page
+
+<img width="1368" height="794" alt="image" src="https://github.com/user-attachments/assets/85448ae9-8028-4584-8bde-f59914167e83" />
+
+### Register Page
+
+<img width="1249" height="811" alt="image" src="https://github.com/user-attachments/assets/4abad55f-490e-4962-8a53-f29319eb58d6" />
+
+-----
+
+Made with ❤️ by Mylord for Pemrograman Web Project.
+
+```
+
+### 💡 Tips Penting buat Kamu:
+
+1.  **Jangan Upload `.env` ke GitHub:** Pastikan file `.env` kamu masuk ke dalam `.gitignore`. Juri harus membuat file `.env` mereka sendiri (atau kamu kasih tahu isinya saat presentasi), tapi jangan di-push ke publik karena ada password database kamu.
+2.  **Folder Uploads:** Di instruksi di atas (poin 3c), saya tambahkan perintah `mkdir uploads`. Ini penting! Karena biasanya folder kosong tidak ikut ter-upload ke GitHub. Kalau juri clone kodinganmu dan folder `uploads` tidak ada, aplikasinya akan error saat upload gambar.
+3.  **Link GitHub:** Ganti `username-kamu` di bagian clone dengan link repo aslimu nanti.
+
+Sekarang README kamu sudah lengkap dari "Pitch" sampai "Cara Install". Ada lagi yang mau dipoles?
+```
