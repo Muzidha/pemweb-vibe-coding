@@ -12,9 +12,15 @@ const protect = async (req, res, next) => {
 
       // Decode token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log('Decoded Token:', decoded);
 
       // Cari user berdasarkan ID di token, simpan di req.user
       req.user = await User.findById(decoded.id).select('-password');
+
+      if (!req.user) {
+        console.log('User not found for ID:', decoded.id);
+        return res.status(401).json({ message: 'User not found' });
+      }
 
       next(); // Lanjut ke controller berikutnya
     } catch (error) {

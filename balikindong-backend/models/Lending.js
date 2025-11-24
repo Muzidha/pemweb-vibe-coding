@@ -4,7 +4,7 @@ const lendingSchema = mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'User' // Relasi: Barang ini milik User siapa?
+    ref: 'User'
   },
   itemName: {
     type: String,
@@ -14,25 +14,29 @@ const lendingSchema = mongoose.Schema({
     type: String,
     required: [true, 'Nama peminjam wajib diisi']
   },
+  phoneNumber: {
+    type: String,
+    required: [true, 'Nomor WA peminjam wajib diisi']
+  },
   borrowDate: {
     type: Date,
-    default: Date.now // Default hari ini
+    default: Date.now
   },
   returnDate: {
-    type: Date // Opsional, kalau ada janji kapan balik
+    type: Date
   },
   status: {
     type: String,
-    enum: ['dipinjam', 'kembali', 'hilang'], // Hanya boleh 3 status ini
+    enum: ['dipinjam', 'kembali', 'hilang'],
     default: 'dipinjam'
   },
   imagePath: {
     type: String,
-    required: [true, 'Bukti foto wajib diupload'] // Fitur utama kita
+    required: [true, 'Bukti foto wajib diupload']
   },
   conditionNotes: {
     type: String,
-    default: '-' // Misal: "Ada lecet di kiri"
+    default: '-'
   }
 }, {
   timestamps: true

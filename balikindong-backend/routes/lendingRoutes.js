@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { getLendings, createLending, updateLending } = require('../controllers/lendingController');
+const { getLendings, createLending, updateLending, deleteLending } = require('../controllers/lendingController');
 const { protect } = require('../middleware/authMiddleware');
 
 // --- KONFIGURASI MULTER (UPLOAD) ---
@@ -31,9 +31,12 @@ const upload = multer({ storage: storage, fileFilter: fileFilter });
 // GET semua data & POST data baru (Ada upload gambar 'image')
 router.route('/')
   .get(protect, getLendings)
-  .post(protect, upload.single('image'), createLending); 
+  .post(protect, upload.single('image'), createLending);
 
 // Update status (Mark as returned)
 router.put('/:id', protect, updateLending);
+
+// Delete lending
+router.delete('/:id', protect, deleteLending);
 
 module.exports = router;

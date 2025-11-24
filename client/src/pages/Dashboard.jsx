@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { FaSignOutAlt, FaWhatsapp, FaCheckCircle, FaCamera, FaBoxOpen } from 'react-icons/fa';
+import { FaSignOutAlt, FaWhatsapp, FaCheckCircle, FaCamera, FaBoxOpen, FaTrash } from 'react-icons/fa';
 
 function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [lendings, setLendings] = useState([]);
-  
+
   const [itemName, setItemName] = useState('');
   const [borrowerName, setBorrowerName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [conditionNotes, setConditionNotes] = useState('');
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -43,6 +44,7 @@ function Dashboard() {
     const formData = new FormData();
     formData.append('itemName', itemName);
     formData.append('borrowerName', borrowerName);
+    formData.append('phoneNumber', phoneNumber);
     formData.append('conditionNotes', conditionNotes);
     formData.append('image', image);
 
@@ -54,7 +56,7 @@ function Dashboard() {
         },
       });
       toast.success('Barang berhasil dicatat!');
-      setItemName(''); setBorrowerName(''); setConditionNotes(''); setImage(null); setPreview(null);
+      setItemName(''); setBorrowerName(''); setPhoneNumber(''); setConditionNotes(''); setImage(null); setPreview(null);
       fetchLendings(user.token);
     } catch (error) {
       toast.error('Gagal upload');
@@ -62,7 +64,7 @@ function Dashboard() {
   };
 
   const markReturned = async (id) => {
-    if(!window.confirm('Yakin barang ini sudah kembali?')) return;
+    if (!window.confirm('Yakin barang ini sudah kembali?')) return;
     try {
       await axios.put(`http://localhost:5000/api/lendings/${id}`, {}, {
         headers: { Authorization: `Bearer ${user.token}` },
@@ -71,6 +73,19 @@ function Dashboard() {
       fetchLendings(user.token);
     } catch (error) {
       toast.error('Gagal update status');
+    }
+  };
+
+  const deleteItem = async (id) => {
+    if (!window.confirm('Yakin ingin menghapus data ini?')) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/lendings/${id}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      toast.success('Data berhasil dihapus!');
+      fetchLendings(user.token);
+    } catch (error) {
+      toast.error('Gagal menghapus data');
     }
   };
 
@@ -91,7 +106,7 @@ function Dashboard() {
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 px-4 py-3 shadow-sm">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <FaBoxOpen className="text-2xl text-blue-600"/>
+            <FaBoxOpen className="text-2xl text-blue-600" />
             <h1 className="text-xl font-bold text-gray-800">BalikinDong</h1>
           </div>
           <div className="flex items-center gap-4">
@@ -106,7 +121,7 @@ function Dashboard() {
       <div className="container mx-auto p-4 mt-6">
         {/* --- GRID LAYOUT (Kiri Form, Kanan Data) --- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* KOLOM KIRI: FORM INPUT (Sticky) */}
           <div className="lg:col-span-1">
             <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 sticky top-24">
@@ -121,10 +136,14 @@ function Dashboard() {
                   <input type="text" placeholder="Nama Teman" className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none" value={borrowerName} onChange={(e) => setBorrowerName(e.target.value)} required />
                 </div>
                 <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase">Nomor WA</label>
+                  <input type="text" placeholder="08123456789" className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required />
+                </div>
+                <div>
                   <label className="text-xs font-bold text-gray-500 uppercase">Kondisi</label>
                   <textarea placeholder="Ada lecet? Masih baru?" className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none" rows="2" value={conditionNotes} onChange={(e) => setConditionNotes(e.target.value)}></textarea>
                 </div>
-                
+
                 {/* UPLOAD BOX */}
                 <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition relative bg-gray-50">
                   <input type="file" onChange={handleImageChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*" />
@@ -150,22 +169,22 @@ function Dashboard() {
             <h2 className="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
               📋 Daftar Barang ({lendings.length})
             </h2>
-            
+
             {lendings.length === 0 ? (
               <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
-                <FaBoxOpen className="text-6xl text-gray-200 mx-auto mb-4"/>
+                <FaBoxOpen className="text-6xl text-gray-200 mx-auto mb-4" />
                 <p className="text-gray-400">Belum ada barang yang dipinjamkan.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {lendings.map((item) => (
                   <div key={item._id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition group">
-                    
+
                     {/* FOTO BARANG (Penting: Object Cover biar gak gepeng) */}
                     <div className="h-48 overflow-hidden relative">
-                      <img 
-                        src={`http://localhost:5000/${item.imagePath}`} 
-                        alt={item.itemName} 
+                      <img
+                        src={`http://localhost:5000/${item.imagePath}`}
+                        alt={item.itemName}
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                       />
                       <div className={`absolute top-2 right-2 px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm ${item.status === 'kembali' ? 'bg-green-500' : 'bg-yellow-500'}`}>
@@ -175,8 +194,10 @@ function Dashboard() {
 
                     <div className="p-5">
                       <h3 className="font-bold text-lg text-gray-800 mb-1">{item.itemName}</h3>
-                      <p className="text-sm text-gray-500 mb-3">Peminjam: <span className="font-semibold text-gray-700">{item.borrowerName}</span></p>
-                      
+                      <p className="text-sm text-gray-500 mb-1">Peminjam: <span className="font-semibold text-gray-700">{item.borrowerName}</span></p>
+                      <p className="text-sm text-gray-500 mb-1">WA: <span className="font-semibold text-gray-700">{item.phoneNumber}</span></p>
+                      <p className="text-xs text-gray-400 mb-3">Dipinjam: {new Date(item.createdAt).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+
                       <div className="bg-gray-50 p-2 rounded text-xs text-gray-600 italic mb-4 border border-gray-100">
                         " {item.conditionNotes} "
                       </div>
@@ -184,27 +205,34 @@ function Dashboard() {
                       {/* BUTTON ACTION */}
                       {item.status === 'dipinjam' && (
                         <div className="flex gap-2">
-                          <a 
-                            href={`https://wa.me/?text=Halo ${item.borrowerName}, barang ${item.itemName} kapan dibalikin?`}
+                          <a
+                            href={`https://wa.me/${item.phoneNumber}?text=Halo ${item.borrowerName}, barang ${item.itemName} kapan dibalikin?`}
                             target="_blank"
                             rel="noreferrer"
                             className="flex-1 bg-green-100 text-green-700 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1 hover:bg-green-200 transition"
                           >
                             <FaWhatsapp /> Tagih
                           </a>
-                          <button 
+                          <button
                             onClick={() => markReturned(item._id)}
                             className="flex-1 bg-blue-100 text-blue-700 py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1 hover:bg-blue-200 transition"
                           >
                             <FaCheckCircle /> Selesai
                           </button>
+                          <button
+                            onClick={() => deleteItem(item._id)}
+                            className="bg-red-100 text-red-700 py-2 px-3 rounded-lg text-sm font-semibold flex items-center justify-center gap-1 hover:bg-red-200 transition"
+                            title="Hapus"
+                          >
+                            <FaTrash />
+                          </button>
                         </div>
                       )}
-                      
+
                       {item.status === 'kembali' && (
-                         <div className="w-full bg-gray-100 text-gray-400 py-2 rounded-lg text-sm text-center font-medium">
-                           Barang sudah kembali
-                         </div>
+                        <div className="w-full bg-gray-100 text-gray-400 py-2 rounded-lg text-sm text-center font-medium">
+                          Barang sudah kembali
+                        </div>
                       )}
                     </div>
                   </div>
